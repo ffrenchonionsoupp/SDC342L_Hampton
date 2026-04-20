@@ -1,0 +1,8 @@
+crud-templates/
+├── config.php         // define DB + entity schema here
+├── helpers.php        // rendering, csrf, validator, etc.
+├── index.php          // LIST (READ)
+├── form.php           // CREATE + EDIT (prefilled)
+├── save.php           // CREATE/UPDATE handler
+├── delete.php         // DELETE handler
+└── show.php           // DETAILS (READ one)
