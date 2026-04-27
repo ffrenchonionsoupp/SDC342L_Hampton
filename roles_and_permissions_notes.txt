@@ -1,0 +1,15 @@
+Customers
+- submit complaints
+- view complaintsview status updates
+- read tech notes
+
+Technician
+- view complaints assigned
+- add notes
+- change status of complaints 
+
+Admin
+- view all complaints
+- assign complaints to technicians
+- change status of complaints
+- manage users

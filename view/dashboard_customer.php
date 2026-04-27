@@ -1,0 +1,45 @@
+// submit complaint
+// my complaints
+// view status
+// view notes
+<?php
+session_start();
+require_once(__DIR__ . '/../controller/user_controller.php');
+require_once(__DIR__ . '/../controller/complaint_controller.php');
+
+UserController::requireLogin();
+$userId = UserController::getCurrentUserId();
+$complaints = ComplaintController::getComplaintsForCustomer($userId);
+?>
+<html>
+<head>
+    <title>Customer Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<h1>Customer Dashboard</h1>
+<p>Welcome, <?php echo $_SESSION['full_name']; ?></p>
+
+<p><a href="add_complaint.php">Submit New Complaint</a></p>
+
+<h2>My Complaints</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php foreach ($complaints as $c): ?>
+        <tr>
+            <td><?php echo $c['complaint_id']; ?></td>
+            <td><?php echo htmlspecialchars($c['title']); ?></td>
+            <td><?php echo $c['status']; ?></td>
+            <td><?php echo $c['created_at']; ?></td>
+            <td><a href="complaint_details.php?id=<?php echo $c['complaint_id']; ?>">View</a></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+</body>
+</html>
