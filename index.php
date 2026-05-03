@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once(__DIR__ . '/controller/user_controller.php');
+require_once(__DIR__ . '/controller/user.php');
+require_once(__DIR__ . '/util/security.php');
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: view/login.php');
@@ -9,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $roleId = UserController::getCurrentRoleId();
 
-if ($roleId == 1) {          // assume 1 = customer
+if ($roleId == 1) {          // customer
     header('Location: view/dashboard_customer.php');
 } elseif ($roleId == 2) {    // technician
     header('Location: view/dashboard_technician.php');
