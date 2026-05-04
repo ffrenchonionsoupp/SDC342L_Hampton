@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once(__DIR__ . '/../controller/user_controller.php');
 require_once(__DIR__ . '/../model/user_db.php');
@@ -25,7 +29,7 @@ if (isset($_POST['register'])) {
     if ($username === '') {
         $errors['username'] = "Required";
         $valid = false;
-    } elseif (UserDB::usernameExists($username)) {
+    } elseif (UsersDB::usernameExists($username)) {
         $errors['username'] = "Username already taken";
         $valid = false;
     }
@@ -34,10 +38,32 @@ if (isset($_POST['register'])) {
     if ($password === '') {
         $errors['password'] = "Required";
         $valid = false;
-    } elseif (strlen($password) < 6) {
-        $errors['password'] = "Must be at least 6 characters";
+
+    } elseif (strlen($password) < 8) {
+        $errors['password'] = "Must be at least 8 characters long";
+        $valid = false;
+
+    } elseif (!preg_match('/[A-Z]/', $password)) {
+        $errors['password'] = "Must contain at least one uppercase letter";
+        $valid = false;
+
+    } elseif (!preg_match('/[a-z]/', $password)) {
+        $errors['password'] = "Must contain at least one lowercase letter";
+        $valid = false;
+
+    } elseif (!preg_match('/[0-9]/', $password)) {
+        $errors['password'] = "Must contain at least one number";
+        $valid = false;
+
+    } elseif (!preg_match('/[\W_]/', $password)) {
+        $errors['password'] = "Must contain at least one special character";
+        $valid = false;
+
+    } elseif (preg_match('/\s/', $password)) {
+        $errors['password'] = "Cannot contain spaces";
         $valid = false;
     }
+
 
     // FULL NAME
     if ($fullName === '') {
@@ -52,7 +78,7 @@ if (isset($_POST['register'])) {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Invalid email format";
         $valid = false;
-    } elseif (UserDB::emailExists($email)) {
+    } elseif (UsersDB::emailExists($email)) {
         $errors['email'] = "Email already registered";
         $valid = false;
     }
@@ -66,10 +92,10 @@ if (isset($_POST['register'])) {
     if ($valid) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        UserDB::registerUser($username, $hash, $fullName, $email, $roleId);
+        UsersDB::registerUser($username, $hash, $fullName, $email, $roleId);
 
         // Auto-login
-        $user = UserDB::getUserByUsername($username);
+        $user = UsersDB::getUserByUsername($username);
         $_SESSION['user_id'] = $user->getUserId();
         $_SESSION['role_id'] = $user->getRoleId();
         $_SESSION['full_name'] = $user->getFullName();

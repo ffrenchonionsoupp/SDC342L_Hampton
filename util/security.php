@@ -17,26 +17,54 @@ class Security {
 
  //perform any needed clean-up for logging out
  public static function logout() {
- unset($_SESSION); //clear the session info
- 
- //clear any post info to prevent back button
- //from allowing user to breach security
- unset($_POST); 
+    // Clear all session variables
+    $_SESSION = [];
 
- //set a logout message and return to login page
- $_SESSION['logout_msg'] = 'Successfully logged out.';
- header('Location: ../index.php');
- exit();
+    // Destroy the session cookie
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
     }
 
- public static function checkAuthority($auth) {
- //check to see if user is authorized - if not, set
- //a message and return to login page
- if (!isset($_SESSION[$auth]) || !$_SESSION[$auth]) {
- $_SESSION['logout_msg'] = 
- 'Current login unauthorized for this page.';
- header("Location: ../index.php");
- exit();
-        }        
+    // Destroy the session itself
+    session_destroy();
+
+    // Redirect with message
+    session_start();
+    $_SESSION['logout_msg'] = 'Successfully logged out.';
+    header('Location: ../index.php');
+    exit();
+}
+
+
+public static function checkAuthority($requiredRole) {
+
+    if (!isset($_SESSION['role_id'])) {
+        header("Location: login.php");
+        exit();
     }
+
+    $roleId = $_SESSION['role_id'];
+
+    // Map role names to IDs
+    $roles = [
+        'customer' => 1,
+        'technician' => 2,
+        'admin' => 3
+    ];
+
+    if (!isset($roles[$requiredRole])) {
+        die("Invalid role check");
+    }
+
+    if ($roleId != $roles[$requiredRole]) {
+        $_SESSION['logout_msg'] = 'Current login unauthorized for this page.';
+        header("Location: ../index.php");
+        exit();
+    }
+}
+    
 }

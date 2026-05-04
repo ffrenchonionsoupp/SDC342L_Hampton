@@ -6,8 +6,13 @@
 session_start();
 require_once(__DIR__ . '/../controller/user_controller.php');
 require_once(__DIR__ . '/../controller/complaint_controller.php');
+require_once(__DIR__.'/../util/security.php');
 
 UserController::requireLogin();
+
+//confirm user is authorized for the page
+Security::checkAuthority('customer');
+
 $userId = UserController::getCurrentUserId();
 $complaints = ComplaintController::getComplaintsForCustomer($userId);
 ?>
@@ -41,5 +46,6 @@ $complaints = ComplaintController::getComplaintsForCustomer($userId);
         </tr>
     <?php endforeach; ?>
 </table>
+<p><a href="../util/logout.php">Logout</a></p>
 </body>
 </html>

@@ -2,7 +2,7 @@
 require_once(__DIR__ . '/database.php');
 require_once(__DIR__ . '/../controller/user.php');
 
-class UserDB {
+class UsersDB {
 
     public static function getUserByUsername($username) {
         $db = new Database();
@@ -36,7 +36,7 @@ class UserDB {
         if ($dbConn) {
             //create the query string
             $query = "SELECT * FROM users
-            WHERE users.EMail = '$email'";
+            WHERE users.email = '$email'";
 
             //execute the query - returns false if
             //no such email found

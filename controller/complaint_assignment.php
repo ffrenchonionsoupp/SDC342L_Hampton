@@ -1,6 +1,7 @@
+<?php
 // assignComplaint
 // getAssignmentByComplaint
-<?php
+
 class ComplaintAssignment {
     private $assignmentId;
     private $complaintId;

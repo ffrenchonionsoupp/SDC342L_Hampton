@@ -1,16 +1,16 @@
+<?php
 // login
 // logout
 // getUserById
 // getTechnicians
 // getCustomers
-<?php
 require_once(__DIR__ . '/../model/user_db.php');
 require_once(__DIR__ . '/user.php');
 
 class UserController {
 
     public static function login($username, $password) {
-        $user = UserDB::getUserByUsername($username);
+        $user = UsersDB::getUserByUsername($username);
 
         if ($user && password_verify($password, $user->getPasswordHash())) {
             $_SESSION['user_id'] = $user->getUserId();
@@ -38,13 +38,13 @@ class UserController {
     }
     public static function register($username, $password, $fullName, $email, $roleId) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        return UserDB::registerUser($username, $hash, $fullName, $email, $roleId);
+        return UsersDB::registerUser($username, $hash, $fullName, $email, $roleId);
     }
 
     //function to check login credentials - return the
     //user's level if valid, false otherwise
-    public static function validUser($email, $password) {
-    $queryRes = UsersDB::getUserByEMail($email);
+    /*public static function validUser($user, $password) {
+    $queryRes = UsersDB::getUserByUsername($user);
     if ($queryRes) {
     //process the user row
     $user = self::rowToUser($queryRes);
@@ -59,4 +59,5 @@ class UserController {
     return false;
             }
     }
+    */
 }

@@ -1,40 +1,39 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once(__DIR__ . '/../controller/user.php');
 require_once(__DIR__ . '/../controller/user_controller.php');
 require_once(__DIR__ . '/../util/security.php');
 
 $error = '';
+$login_msg = '';
 
 Security::checkHTTPS();
-//set the message related to login/logout functionality
-$login_msg = isset($_SESSION['logout_msg']) ? 
- $_SESSION['logout_msg'] : '';
+if (isset($_POST['username']) && isset($_POST['password'])) {
 
-if (isset($_POST['email']) & isset($_POST['pw'])) {
- //login and password fields were set
- $roleId = UserController::validUser(
- $_POST['email'], $_POST['pw']);
+  $user = UserController::login($_POST['username'], $_POST['password']);
 
- if ($roleId === '1') {
- $_SESSION['admin'] = false;
- $_SESSION['user'] = true;
- $_SESSION['tech'] = false;
- header("Location: view/dashboard_customer.php");
-    } else if ($roleId === '2') {
- $_SESSION['admin'] = false;
- $_SESSION['user'] = false;
- $_SESSION['tech'] = true;
- header("Location: view/dashboard_technician.php");
-   } else if ($roleId === '3') {
- $_SESSION['admin'] = true;
- $_SESSION['user'] = false;
- $_SESSION['tech'] = false;
- header("Location: view/dashboard_admin.php");
-   } else {
- $login_msg = 'Failed Authentication - try again.';
-   }
+  if ($user) {
+      $roleId = $user->getRoleId();
+
+      if ($roleId == 1) {
+          header("Location: dashboard_customer.php");
+          exit();
+      } elseif ($roleId == 2) {
+          header("Location: dashboard_technician.php");
+          exit();
+      } elseif ($roleId == 3) {
+          header("Location: dashboard_admin.php");
+          exit();
+      }
+  } else {
+      $login_msg = 'Failed Authentication - try again.';
+  }
 }
+
 ?>
 <html>
 <head>

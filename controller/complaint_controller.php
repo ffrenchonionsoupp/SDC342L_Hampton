@@ -1,10 +1,11 @@
+<?php
 // getAllComplaints
 // getComplaintsByUser
 // getComplaintsByTechnician
 // addComplaint
 // updateComplaintStatus
 // getComplaintDetails
-<?php
+
 require_once(__DIR__ . '/../model/complaint_db.php');
 require_once(__DIR__ . '/../model/complaint_assignment_db.php');
 require_once(__DIR__ . '/../model/complaint_note_db.php');

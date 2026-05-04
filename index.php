@@ -1,21 +1,26 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
+
 require_once(__DIR__ . '/controller/user_controller.php');
-require_once(__DIR__ . '/controller/user.php');
-require_once(__DIR__ . '/util/security.php');
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: view/login.php');
     exit();
 }
 
-$roleId = UserController::getCurrentRoleId();
+$roleId = $_SESSION['role_id'];
 
-if ($roleId == 1) {          // customer
+if ($roleId == 1) {
     header('Location: view/dashboard_customer.php');
-} elseif ($roleId == 2) {    // technician
+    exit();
+} elseif ($roleId == 2) {
     header('Location: view/dashboard_technician.php');
-} else {                     // admin
+    exit();
+} else {
     header('Location: view/dashboard_admin.php');
+    exit();
 }
-exit();
