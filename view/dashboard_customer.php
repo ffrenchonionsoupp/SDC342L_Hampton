@@ -1,8 +1,9 @@
+<?php
 // submit complaint
 // my complaints
 // view status
 // view notes
-<?php
+
 session_start();
 require_once(__DIR__ . '/../controller/user_controller.php');
 require_once(__DIR__ . '/../controller/complaint_controller.php');
@@ -25,7 +26,7 @@ $complaints = ComplaintController::getComplaintsForCustomer($userId);
 <h1>Customer Dashboard</h1>
 <p>Welcome, <?php echo $_SESSION['full_name']; ?></p>
 
-<p><a href="add_complaint.php">Submit New Complaint</a></p>
+<p><a href="add_update_complaint.php">Submit New Complaint</a></p>
 
 <h2>My Complaints</h2>
 <table>
@@ -43,6 +44,7 @@ $complaints = ComplaintController::getComplaintsForCustomer($userId);
             <td><?php echo $c['status']; ?></td>
             <td><?php echo $c['created_at']; ?></td>
             <td><a href="complaint_details.php?id=<?php echo $c['complaint_id']; ?>">View</a></td>
+            <td><a href="add_update_complaint.php?id=<?php echo $c['complaint_id']; ?>">Update</a></td>
         </tr>
     <?php endforeach; ?>
 </table>

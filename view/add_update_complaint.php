@@ -33,10 +33,21 @@ if (isset($_POST['save'])) {
 
     if ($valid) {
         if ($editing) {
-            ComplaintController::updateStatus($_POST['complaint_id'], $_POST['status']);
-            ComplaintController::addComplaint($userId, $title, $desc);
+
+            ComplaintController::updateComplaint(
+                $_POST['complaint_id'],
+                $title,
+                $desc,
+                $_POST['status']
+            );
+        
         } else {
-            ComplaintController::addComplaint($userId, $title, $desc);
+        
+            ComplaintController::addComplaint(
+                $userId,
+                $title,
+                $desc
+            );
         }
 
         header('Location: dashboard_customer.php');
@@ -53,7 +64,8 @@ if (isset($_POST['save'])) {
 
 <h1><?php echo $editing ? "Update Complaint" : "Submit New Complaint"; ?></h1>
 
-<form method="POST">
+<form method="POST"
+      enctype="multipart/form-data">
 
     <p>Title:
         <input type="text" name="title"
@@ -68,20 +80,33 @@ if (isset($_POST['save'])) {
         <span class="error"><?php echo $errorDesc; ?></span>
     </p>
 
-    <?php if ($editing): ?>
-        <p>Status:
-            <select name="status">
-                <?php
-                $statuses = ['open','assigned','in_progress','resolved','closed'];
-                foreach ($statuses as $s) {
-                    $sel = ($complaint['status'] == $s) ? "selected" : "";
-                    echo "<option value='$s' $sel>$s</option>";
-                }
-                ?>
-            </select>
-        </p>
-        <input type="hidden" name="complaint_id" value="<?php echo $complaint['complaint_id']; ?>">
+    <p>Upload File:<br>
+        <input type="file" name="uploaded_file">
+    </p>
+    <?php if ($editing && !empty($complaint['uploaded_file'])): ?>
+    <p>
+        Current File:
+
+        <a href="../uploads/<?php echo $complaint['uploaded_file']; ?>"
+        target="_blank">
+
+            View Uploaded File
+
+        </a>
+    </p>
+
     <?php endif; ?>
+
+    <?php if ($editing): ?>
+        <input type="hidden"
+            name="status"
+            value="<?php echo $complaint['status']; ?>">
+
+        <input type="hidden"
+            name="complaint_id"
+            value="<?php echo $complaint['complaint_id']; ?>">
+
+        <?php endif; ?>
 
     <p>
         <input type="submit" name="save" value="Save">

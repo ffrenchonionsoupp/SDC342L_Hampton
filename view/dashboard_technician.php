@@ -1,7 +1,9 @@
+
+<?php
 // assigned complaints
 // add note
 // update status
-<?php
+
 session_start();
 require_once(__DIR__ . '/../controller/user_controller.php');
 require_once(__DIR__ . '/../controller/complaint_controller.php');
@@ -44,7 +46,7 @@ $complaints = ComplaintController::getComplaintsForTechnician($techId);
             <td><?php echo $c['customer_name']; ?></td>
             <td><?php echo $c['created_at']; ?></td>
             <td>
-                <a href="complaint_details.php?id=<?php echo $c['complaint_id']; ?>">View</a>
+                <a href="technician_complaint_details.php?id=<?php echo $c['complaint_id']; ?>">View</a>
             </td>
         </tr>
     <?php endforeach; ?>

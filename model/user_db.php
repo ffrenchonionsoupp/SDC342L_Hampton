@@ -26,7 +26,28 @@ class UsersDB {
 
         return false;
     }
+    public static function getUsersByRole($roleId) {
 
+        $db = new Database();
+        $conn = $db->getDbConn();
+    
+        $query = "
+            SELECT *
+            FROM users
+            WHERE role_id = '$roleId'
+            ORDER BY full_name
+        ";
+    
+        $result = $conn->query($query);
+    
+        $rows = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+    
+        return $rows;
+    }
     //function to get a user by their e-mail address
     public static function getUserByEMail($email) {
         //get the DB connection

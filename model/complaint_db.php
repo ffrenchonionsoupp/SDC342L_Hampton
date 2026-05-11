@@ -8,12 +8,18 @@ class ComplaintDB {
         $db = new Database();
         $conn = $db->getDbConn();
 
-        $query = "INSERT INTO complaints (user_id, title, description, status)
+        $uploadedFile = $conn->real_escape_string(
+            $complaint->getUploadedFile()
+        );
+        
+        $query = "INSERT INTO complaints
+                  (user_id, title, description, status, uploaded_file)
                   VALUES (
                     '{$complaint->getUserId()}',
                     '{$conn->real_escape_string($complaint->getTitle())}',
                     '{$conn->real_escape_string($complaint->getDescription())}',
-                    '{$complaint->getStatus()}'
+                    'open',
+                    '$uploadedFile'
                   )";
 
         return $conn->query($query);
@@ -73,4 +79,31 @@ class ComplaintDB {
         $query = "UPDATE complaints SET status = '$status' WHERE complaint_id = '$id'";
         return $conn->query($query);
     }
+    
+    public static function updateComplaint(
+        $complaintId,
+        $title,
+        $description,
+        $status
+    ) {
+    
+        $db = new Database();
+        $conn = $db->getDbConn();
+    
+        $title = $conn->real_escape_string($title);
+        $description = $conn->real_escape_string($description);
+        $status = $conn->real_escape_string($status);
+    
+        $query = "
+            UPDATE complaints
+            SET
+                title = '$title',
+                description = '$description',
+                status = '$status'
+            WHERE complaint_id = '$complaintId'
+        ";
+    
+        return $conn->query($query);
+    }
+
 }

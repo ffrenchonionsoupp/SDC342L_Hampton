@@ -6,17 +6,50 @@
 // updateComplaintStatus
 // getComplaintDetails
 
+
+require_once(__DIR__ . '/../model/database.php');
 require_once(__DIR__ . '/../model/complaint_db.php');
 require_once(__DIR__ . '/../model/complaint_assignment_db.php');
 require_once(__DIR__ . '/../model/complaint_note_db.php');
-require_once(__DIR__ . '/../controller/complaint.php');
-require_once(__DIR__ . '/../controller/complaint_note.php');
-require_once(__DIR__ . '/../controller/complaint_assignment.php');
+require_once(__DIR__ . '/complaint.php');
+require_once(__DIR__ . '/complaint_note.php');
+require_once(__DIR__ . '/complaint_assignment.php');
 
 class ComplaintController {
 
-    public static function addComplaint($userId, $title, $description) {
-        $complaint = new Complaint($userId, $title, $description);
+    public static function addComplaint(
+        $userId,
+        $title,
+        $description,
+        $uploadedFile = ''
+    ) {
+    
+        // handle file upload
+        if (!empty($_FILES['uploaded_file']['name'])) {
+    
+            $target_dir = __DIR__ . '/../uploads/';
+    
+            if (!file_exists($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+    
+            $filename = basename($_FILES['uploaded_file']['name']);
+    
+            $uploadedFile = time() . '_' . $filename;
+            
+            move_uploaded_file(
+                $_FILES['uploaded_file']['tmp_name'],
+                $target_dir . $uploadedFile
+            );
+        }
+    
+        $complaint = new Complaint(
+            $userId,
+            $title,
+            $description,
+            $uploadedFile
+        );
+    
         return ComplaintDB::addComplaint($complaint);
     }
 
@@ -38,6 +71,20 @@ class ComplaintController {
             'notes' => $notes,
             'assignment' => $assignment
         ];
+    }
+    public static function updateComplaint(
+        $complaintId,
+        $title,
+        $description,
+        $status
+    ) {
+    
+        return ComplaintDB::updateComplaint(
+            $complaintId,
+            $title,
+            $description,
+            $status
+        );
     }
 
     public static function assignComplaint($complaintId, $techId) {

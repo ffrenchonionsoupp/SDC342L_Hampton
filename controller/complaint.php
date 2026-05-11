@@ -7,12 +7,19 @@ class Complaint {
     private $status;
     private $createdAt;
     private $updatedAt;
+    private $uploadedFile;
 
-    public function __construct($userId, $title, $description, $status = 'open') {
+    public function __construct(
+        $userId,
+        $title,
+        $description,
+        $uploadedFile = ''
+    )
+    {
         $this->userId = $userId;
         $this->title = $title;
         $this->description = $description;
-        $this->status = $status;
+        $this->uploadedFile = $uploadedFile;
     }
 
     public function setComplaintId($id) { $this->complaintId = $id; }
@@ -22,4 +29,5 @@ class Complaint {
     public function getTitle() { return $this->title; }
     public function getDescription() { return $this->description; }
     public function getStatus() { return $this->status; }
+    public function getUploadedFile() { return $this->uploadedFile; }
 }
